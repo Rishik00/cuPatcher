@@ -9,7 +9,7 @@
 namespace py = pybind11;
 
 std::string LaunchSigmoid(py::array_t<float> A, int N) {
-	py::buffer_info A_buff = A>request();
+	py::buffer_info A_buff = A.request();
 	
 	if (A_buff.ndim > 1) {
 		return "ndims cant be greater than 1. please ensure only vectors are passed";
@@ -22,8 +22,8 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 	float* A_d = nullptr;
 	float* A_h = static_cast<float> *(A_buff.ptr);
 
-	cudaMalloc(&A_d, sizeof(float) * A.shape[0]);
-	cudaMemcpy(A_d, A.ptr, sizeof(float) * N, cudaMemcpyHostToDevice);
+	cudaMalloc(&A_d, sizeof(float) * A_buff.size);
+	cudaMemcpy(A_d, A_h, sizeof(float) * A_buff.size, cudaMemcpyHostToDevice);
 
 	dim3 blockDim(N);
 	dim3 gridDim(1);
@@ -31,13 +31,13 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 	sigmoidKernel<<<gridDim, blockDim>>>(A_d, N);	
 	cudaDeviceSynchronize();
 
-	cudaMemcpy(A.ptr, A_d, sizeof(float) * N, cudaMemcpyDeviceToHost);
+	cudaMemcpy(A_h, A_d, sizeof(float) * N, cudaMemcpyDeviceToHost);
 	cudaFree(A_d);
 
 	return "Success";
 }
 
-void LaunchCopyData(py::array<float> A, int N) {
+void LaunchCopyData(py::array_t<float> A, int N) {
 }
 
 PYBIND11_MODULE(cuPatcher, m) {
