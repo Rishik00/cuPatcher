@@ -1,4 +1,5 @@
 #include <cuda_runtime.h>
+#include "kernels.h"
 
 __global__ void dataCopy(float* A, float* B, int N) {
 	int idx = threadIdx.x + blockIdx.x * blockDim.x;
