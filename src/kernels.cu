@@ -17,11 +17,10 @@ __global__ void sigmoidKernel(float* A, int N) {
 	}
 }
 
-
-__global__ void sumKernel(float* A, float* sum, int N) {
-	
+__global__ void matMul (float* A, float* B, float* C, int N, int M) {
 
 }
 
+__global__ void RectMul (float* A, float* B, float* C, int N, int M, int K) {
 
-
+}

@@ -1,40 +1,48 @@
 #include <iostream>
 #include <kernels.h>
 #include <cuda_runtime.h>
+
+// Pybind11 imports
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
-std::string LaunchSigmoid(float* A, int N) {
-	float* A_d
+namespace py = pybind11;
 
-	if (N > 256) {
-		return "nope cant go beyond 1024";
+std::string LaunchSigmoid(py::array_t<float> A, int N) {
+	py::buffer_info A_buff = A>request();
+	
+	if (A_buff.ndim > 1) {
+		return "ndims cant be greater than 1. please ensure only vectors are passed"
 	}
 
-	cudaMalloc(&A_d, sizeof(float) * N);
+	if (A_buff.size > 256) {
+		return "nope cant go beyond 256";
+	}
 
-	cudaMemcpy(A_d, A, sizeof(float) * N, cudaMemcpyHostToDevice);
+	float* A_d = nullptr;
+	float* A_h = static_cast<float> *(A_buff.ptr);
+
+	cudaMalloc(&A_d, sizeof(float) * A.shape[0]);
+	cudaMemcpy(A_d, A.ptr, sizeof(float) * N, cudaMemcpyHostToDevice);
 
 	dim3 blockDim(N);
-	dim3 gridDim(1)
-	sigmoidKernel<<<gridDim, blockDim>>>(A_d, N);
-	
+	dim3 gridDim(1);
+
+	sigmoidKernel<<<gridDim, blockDim>>>(A_d, N);	
 	cudaDeviceSynchronize();
 
-	cudaMemcpy(A, A_d, sizeof(float) * N, cudaMemcpyDeviceToHost);
-
+	cudaMemcpy(A.ptr, A_d, sizeof(float) * N, cudaMemcpyDeviceToHost);
 	cudaFree(A_d);
 
-	delete[] A;
-	return "Success"
+	return "Success";
 }
 
-void LaunchCopyData() {
+void LaunchCopyData(py::array<float> A, int N) {
 }
 
 PYBIND11_MODULE(cuPatcher, m) {
 	m.doc() = "Basic CUDA dispatcher written by Rishik00";
+
 	m.def("launch_sigmoid", &LaunchSigmoid, "A kernel that can do sigmoid using cuda");
-
 	m.def("launch_copy", &LaunchCopyData, "A kernel that copies data");
-
 }
