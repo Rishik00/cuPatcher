@@ -1,5 +1,5 @@
 #include <iostream>
-#include <kernels.h>
+#include "kernels.h"
 #include <cuda_runtime.h>
 
 // Pybind11 imports
@@ -12,7 +12,7 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 	py::buffer_info A_buff = A>request();
 	
 	if (A_buff.ndim > 1) {
-		return "ndims cant be greater than 1. please ensure only vectors are passed"
+		return "ndims cant be greater than 1. please ensure only vectors are passed";
 	}
 
 	if (A_buff.size > 256) {
