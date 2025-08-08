@@ -37,5 +37,33 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# ----------------------
+# CMake-specific ignores
+# ----------------------
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# Ninja-specific
+.build/
+.ninja_deps
+.ninja_log
+
+# Common build directories
+/build/
+/build-*/
+/out/
+/bin/
+/lib/
+
+# VSCode CMake Tools
+.vscode/settings.json
+.vscode/cmake-kits.json
+.vscode/cmake-tools.json
