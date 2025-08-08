@@ -1,6 +1,8 @@
 #include <iostream>
+#include "launcher.h"
 
 // Pybind11 imports
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
@@ -18,7 +20,7 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 	}
 
 	float* A_h = static_cast<float*> (A_buff.ptr);
-	float *res_d = sigmoidDispatcher(A_d, A_buff.size);
+	float *res_d = sigmoidDispatcher(A_h, A_buff.size);
 
 	if (res_d) {
 		return "Success";

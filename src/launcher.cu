@@ -2,7 +2,6 @@
 #include "kernels.h"
 
 float* sigmoidDispatcher(float* A_d, float* A_h, int N) {
-	float* A_d = nullptr;	
 	float* res_d = nullptr;
 
 	cudaMalloc(&A_d, sizeof(float) * N);
