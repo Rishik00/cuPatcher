@@ -20,7 +20,7 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 	}
 
 	float* A_d = nullptr;
-	float* A_h = static_cast<float> *(A_buff.ptr);
+	float* A_h = static_cast<float*> (A_buff.ptr);
 
 	cudaMalloc(&A_d, sizeof(float) * A_buff.size);
 	cudaMemcpy(A_d, A_h, sizeof(float) * A_buff.size, cudaMemcpyHostToDevice);
