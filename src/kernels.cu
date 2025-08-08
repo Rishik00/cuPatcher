@@ -9,18 +9,14 @@ __global__ void dataCopy(float* A, float* B, int N) {
 	}
 }
 
-__global__ void sigmoidKernel(float* A, int N) {
+__global__ void sigmoidKernel(float* A, float* res, int N) {
 	int idx = threadIdx.x + blockIdx.x * blockDim.x;
 
 	if (idx < N) {
-		A[idx] = 1 / (1 + expf(A[idx]);
+		res[idx] = 1 / (1 + expf(A[idx]);
 	}
 }
 
-__global__ void matMul (float* A, float* B, float* C, int N, int M) {
+//__global__ void matMul (float* A, float* B, float* C, int N, int M) { }
 
-}
-
-__global__ void RectMul (float* A, float* B, float* C, int N, int M, int K) {
-
-}
+// __global__ void RectMul (float* A, float* B, float* C, int N, int M, int K) {}

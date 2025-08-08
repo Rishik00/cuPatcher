@@ -1,6 +1,4 @@
 #include <iostream>
-#include "kernels.h"
-#include <cuda_runtime.h>
 
 // Pybind11 imports
 #include <pybind11/pybind11.h>
@@ -19,22 +17,14 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 		return "nope cant go beyond 256";
 	}
 
-	float* A_d = nullptr;
 	float* A_h = static_cast<float*> (A_buff.ptr);
+	float *res_d = sigmoidDispatcher(A_d, A_buff.size);
 
-	cudaMalloc(&A_d, sizeof(float) * A_buff.size);
-	cudaMemcpy(A_d, A_h, sizeof(float) * A_buff.size, cudaMemcpyHostToDevice);
-
-	dim3 blockDim(N);
-	dim3 gridDim(1);
-
-	sigmoidKernel<<<gridDim, blockDim>>>(A_d, N);	
-	cudaDeviceSynchronize();
-
-	cudaMemcpy(A_h, A_d, sizeof(float) * N, cudaMemcpyDeviceToHost);
-	cudaFree(A_d);
-
-	return "Success";
+	if (res_d) {
+		return "Success";
+	} else {
+		return "Failed";
+	}
 }
 
 void LaunchCopyData(py::array_t<float> A, int N) {
