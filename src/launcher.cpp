@@ -19,8 +19,8 @@ std::string LaunchSigmoid(py::array_t<float> A, int N) {
 		return "nope cant go beyond 256";
 	}
 
-	float* A_h = static_cast<float*>(buf.ptr);
-	int N = static_cast<int>(buf.size);
+	float* A_h = static_cast<float*>(A_buf.ptr);
+	int N = static_cast<int>(A_buf.size);
 
 	float* res_d = sigmoidDispatcher(nullptr, A_h, N);
 	
